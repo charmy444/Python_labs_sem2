@@ -1,0 +1,16 @@
+[
+  {
+    "id": "file-1",
+    "payload": {
+      "action": "process_uploaded_file",
+      "filename": "orders.csv"
+    }
+  },
+  {
+    "id": "file-2",
+    "payload": {
+      "action": "refresh_statistics",
+      "period": "daily"
+    }
+  }
+]
