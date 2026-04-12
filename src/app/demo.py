@@ -10,9 +10,19 @@ from src.source.generator_source import GeneratorTaskSource
 
 
 class ApiTaskData:
-    def __init__(self, task_id: str, payload: dict[str, object]):
+    def __init__(
+        self,
+        task_id: str,
+        payload: dict[str, object],
+        description: str,
+        priority: int,
+        status: str = "pending",
+    ):
         self.id = task_id
         self.payload = payload
+        self.description = description
+        self.priority = priority
+        self.status = status
 
 
 def create_generated_tasks(count: int = 2) -> list[dict[str, object]]:
@@ -25,6 +35,9 @@ def create_generated_tasks(count: int = 2) -> list[dict[str, object]]:
                     "action": "generated_task",
                     "number": number,
                 },
+                "description": f"Сгенерированная задача №{number}",
+                "priority": min(number + 1, 5),
+                "status": "pending",
             }
         )
     return tasks
@@ -32,8 +45,19 @@ def create_generated_tasks(count: int = 2) -> list[dict[str, object]]:
 
 def create_api_tasks() -> list[ApiTaskData]:
     return [
-        ApiTaskData("api-1", {"action": "send_notification", "channel": "email"}),
-        ApiTaskData("api-2", {"action": "process_order", "order_id": 1042}),
+        ApiTaskData(
+            "api-1",
+            {"action": "send_notification", "channel": "email"},
+            "Отправить уведомление клиенту",
+            4,
+        ),
+        ApiTaskData(
+            "api-2",
+            {"action": "process_order", "order_id": 1042},
+            "Обработать заказ 1042",
+            5,
+            "in_progress",
+        ),
     ]
 
 
@@ -67,7 +91,10 @@ def run_demo(generated_count: int = 2) -> TaskCollection:
         )
 
     for task in tasks:
-        print(f"- {task.id}: {task.payload}")
+        print(
+            f"- {task.summary} | "
+            f"description={task.description or 'не задано'} | payload={task.payload}"
+        )
 
     print(f"[ДЕМОНСТРАЦИЯ] Всего принято задач: {len(tasks)}")
     return tasks
