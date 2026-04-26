@@ -1,20 +1,22 @@
 from src.contacts.task_source import TaskSource
-from src.domain.task import TaskCollection
+from src.domain.task import TaskQueue
 
 
 class TaskPlatform:
     def __init__(self) -> None:
         self.sources: list[TaskSource] = []
-        self.task_collection = TaskCollection()
+        self.task_queue = TaskQueue()
+        self.task_collection = self.task_queue
 
     def add_source(self, source: object) -> None:
         if not isinstance(source, TaskSource):
             raise TypeError("Источник должен реализовать метод get_tasks")
         self.sources.append(source)
 
-    def receive_tasks(self) -> TaskCollection:
-        self.task_collection = TaskCollection()
+    def receive_tasks(self) -> TaskQueue:
+        self.task_queue = TaskQueue()
+        self.task_collection = self.task_queue
         for source in self.sources:
             for task in source.get_tasks():
-                self.task_collection.add(task)
-        return self.task_collection
+                self.task_queue.add(task)
+        return self.task_queue

@@ -3,7 +3,7 @@ from pathlib import Path
 from src.app.platform import TaskPlatform
 from src.app.registry import SourceRegistry
 from src.contacts.task_source import TaskSource
-from src.domain.task import TaskCollection
+from src.domain.task import TaskQueue
 from src.source.api_source import ApiTaskSource
 from src.source.file_source import FileTaskSource
 from src.source.generator_source import GeneratorTaskSource
@@ -77,7 +77,7 @@ def create_demo_platform(generated_count: int = 2) -> TaskPlatform:
     return platform
 
 
-def run_demo(generated_count: int = 2) -> TaskCollection:
+def run_demo(generated_count: int = 2) -> TaskQueue:
     platform = create_demo_platform(generated_count)
     tasks = platform.receive_tasks()
 

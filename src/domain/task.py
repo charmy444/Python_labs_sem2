@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from collections.abc import Iterator, Mapping
+from collections.abc import Iterable, Iterator, Mapping
 from datetime import UTC, datetime
 from typing import Any, ClassVar
 
@@ -234,23 +234,57 @@ class Task:
         )
 
 
-class TaskCollection:
-    def __init__(self) -> None:
+class TaskQueue:
+    """Пользовательская коллекция задач с повторной итерацией и ленивыми фильтрами."""
+
+    def __init__(self, tasks: Iterable[Task] | None = None) -> None:
         self.tasks: list[Task] = []
+        if tasks is not None:
+            self.extend(tasks)
 
     def __getitem__(self, key: int | slice) -> Task | list[Task]:
         return self.tasks[key]
 
     def __iter__(self) -> Iterator[Task]:
-        return iter(self.tasks)
+        for task in self.tasks:
+            yield task
 
     def __len__(self) -> int:
         return len(self.tasks)
 
     def add(self, task: Task) -> None:
         if not isinstance(task, Task):
-            raise TypeError("В коллекцию можно добавлять только экземпляры Task")
+            raise TypeError("В очередь можно добавлять только экземпляры Task")
         self.tasks.append(task)
+
+    def extend(self, tasks: Iterable[Task]) -> None:
+        for task in tasks:
+            self.add(task)
+
+    def filter_by_status(self, status: str) -> Iterator[Task]:
+        normalized_status = status.strip().lower()
+        if normalized_status not in Task.ALLOWED_STATUSES:
+            raise TaskValidationError(
+                f"Недопустимый статус фильтра '{status}'. "
+                f"Разрешены: {', '.join(sorted(Task.ALLOWED_STATUSES))}"
+            )
+
+        for task in self:
+            if task.status == normalized_status:
+                yield task
+
+    def filter_by_priority(self, priority: int) -> Iterator[Task]:
+        if isinstance(priority, bool) or not isinstance(priority, int):
+            raise TaskValidationError("Приоритет фильтра должен быть целым числом")
+        if not 1 <= priority <= 5:
+            raise TaskValidationError("Приоритет фильтра должен быть в диапазоне от 1 до 5")
+
+        for task in self:
+            if task.priority == priority:
+                yield task
+
+
+TaskCollection = TaskQueue
 
 
 def make_task(raw_task: object) -> Task:

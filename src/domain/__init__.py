@@ -1,3 +1,3 @@
-from src.domain.task import Task, TaskCollection, make_task
+from src.domain.task import Task, TaskCollection, TaskQueue, make_task
 
-__all__ = ["Task", "TaskCollection", "make_task"]
+__all__ = ["Task", "TaskCollection", "TaskQueue", "make_task"]

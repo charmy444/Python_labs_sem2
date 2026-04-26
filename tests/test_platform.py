@@ -8,7 +8,7 @@ sys.path.insert(0, str(project_root))
 import pytest
 
 from src.app.platform import TaskPlatform
-from src.domain.task import TaskCollection
+from src.domain.task import TaskQueue
 from src.source.api_source import ApiTaskSource
 from src.source.file_source import FileTaskSource
 from src.source.generator_source import GeneratorTaskSource
@@ -22,8 +22,9 @@ def test_platform_creation():
     platform = TaskPlatform()
 
     assert platform.sources == []
-    assert isinstance(platform.task_collection, TaskCollection)
-    assert len(platform.task_collection) == 0
+    assert isinstance(platform.task_queue, TaskQueue)
+    assert platform.task_collection is platform.task_queue
+    assert len(platform.task_queue) == 0
 
 
 def test_platform_add_wrong_source():
@@ -51,6 +52,7 @@ def test_platform_receive_tasks_from_different_sources(tmp_path):
 
     tasks = platform.receive_tasks()
 
+    assert isinstance(tasks, TaskQueue)
     assert len(tasks) == 3
     assert tasks[0].id == "file-1"
     assert tasks[1].id == "generator-1"
