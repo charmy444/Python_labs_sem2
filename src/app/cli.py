@@ -6,7 +6,9 @@ from src.app.demo import run_demo
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Прием задач из разных источников")
+    parser = argparse.ArgumentParser(
+        description="Прием и валидация задач с использованием дескрипторов"
+    )
     parser.add_argument(
         "--generated-count",
         type=int,

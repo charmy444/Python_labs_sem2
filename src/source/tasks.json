@@ -1,6 +1,10 @@
 [
   {
     "id": "file-1",
+    "description": "Обработать загруженный файл заказов",
+    "priority": 3,
+    "status": "pending",
+    "created_at": "2026-04-10T09:00:00+03:00",
     "payload": {
       "action": "process_uploaded_file",
       "filename": "orders.csv"
@@ -8,6 +12,10 @@
   },
   {
     "id": "file-2",
+    "description": "Обновить ежедневную статистику",
+    "priority": 2,
+    "status": "pending",
+    "created_at": "2026-04-10T09:15:00+03:00",
     "payload": {
       "action": "refresh_statistics",
       "period": "daily"
